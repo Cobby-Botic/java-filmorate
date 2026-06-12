@@ -1,7 +1,83 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.Exception.ConditionsNotMetException;
+import ru.yandex.practicum.filmorate.model.Film;
 
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+@Slf4j
 @RestController
+@RequestMapping("/films")
 public class FilmController {
+
+    private final Map<Integer, Film> filmMap = new HashMap<>();
+
+    @GetMapping
+    public Collection<Film> getFilms() {
+        return filmMap.values();
+    }
+
+    @PostMapping
+    public Film addNewFilm(@RequestBody Film newFilm) {
+        if (newFilm.getName() == null || newFilm.getName().isBlank()) {
+            log.warn("Название фильма пустое");
+            throw new ConditionsNotMetException("Название фильма не может быть пустым");
+        }
+        if (newFilm.getDescription().length() > 200) {
+            log.warn("Длина описания больше 200");
+            throw new ConditionsNotMetException("Длина описания не может быть больше 200 символов");
+        }
+        if (newFilm.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
+            log.warn("Дата релиза раньше минимальной");
+            throw new ConditionsNotMetException("Дата релиза не может быть раньше 28 декабря 1895 года");
+        }
+        if (newFilm.getDuration() < 0) {
+            log.warn("Продолжительность фильма меньше 0");
+            throw new ConditionsNotMetException("Продолжительность фильма должна быть положительным числом");
+        }
+        newFilm.setId(getNextId());
+        filmMap.put(newFilm.getId(), newFilm);
+        return newFilm;
+    }
+
+    @PutMapping
+    public Film updateFilm(@RequestBody Film newFilm) {
+
+
+        if (newFilm.getId() == null) {
+            throw new ConditionsNotMetException("Id должен быть указан");
+        }
+        //остановился тут
+        if (filmMap.containsKey(newFilm.getId())) {
+            Film oldFilm = filmMap.get(newFilm.getId());
+            if (newFilm.getName() != null && !newFilm.getName().isBlank()) {
+                oldFilm.setName(newFilm.getName());
+            }
+            if (newFilm.getDescription() != null && !newFilm.getDescription().isBlank()) {
+                oldFilm.setDescription(newFilm.getDescription());
+            }
+            if (newFilm.getDuration() != null && newFilm.getDuration() > 0) {
+                oldFilm.setDuration(newFilm.getDuration());
+            }
+            if (newFilm.getReleaseDate() != null && newFilm.getReleaseDate().isAfter(LocalDate.of(1895, 12, 28))) {
+                oldFilm.setReleaseDate(newFilm.getReleaseDate());
+            }
+            return oldFilm;
+        }
+        throw new ConditionsNotMetException("Фильм с id не найден");
+    }
+
+    private Integer getNextId() {
+        long currentMaxId = filmMap.keySet()
+                .stream()
+                .mapToLong(id -> id)
+                .max()
+                .orElse(0);
+        return Math.toIntExact(++currentMaxId);
+    }
 }
