@@ -19,6 +19,7 @@ public class FilmController {
 
     @GetMapping
     public Collection<Film> getFilms() {
+        log.info("Запрос всех фильмов");
         return filmMap.values();
     }
 
@@ -47,32 +48,38 @@ public class FilmController {
 
     @PutMapping
     public Film updateFilm(@RequestBody Film newFilm) {
-
-
+        log.info("Запрос на обновление данных фильма");
         if (newFilm.getId() == null) {
+            log.warn("id - пустое");
             throw new ConditionsNotMetException("Id должен быть указан");
         }
-        //остановился тут
         if (filmMap.containsKey(newFilm.getId())) {
+            log.info("фильм с id найден");
             Film oldFilm = filmMap.get(newFilm.getId());
             if (newFilm.getName() != null && !newFilm.getName().isBlank()) {
+                log.info("Обновление имени фильма");
                 oldFilm.setName(newFilm.getName());
             }
-            if (newFilm.getDescription() != null && !newFilm.getDescription().isBlank()) {
+            if (newFilm.getDescription() != null && !newFilm.getDescription().isBlank() && newFilm.getDescription().length() <= 200) {
+                log.info("Обновление описания");
                 oldFilm.setDescription(newFilm.getDescription());
             }
             if (newFilm.getDuration() != null && newFilm.getDuration() > 0) {
+                log.info("Обновление продолжительности");
                 oldFilm.setDuration(newFilm.getDuration());
             }
             if (newFilm.getReleaseDate() != null && newFilm.getReleaseDate().isAfter(LocalDate.of(1895, 12, 28))) {
+                log.info("Обновление даты выпуска");
                 oldFilm.setReleaseDate(newFilm.getReleaseDate());
             }
             return oldFilm;
         }
+        log.warn("Фильм с id в запросе не найден");
         throw new ConditionsNotMetException("Фильм с id не найден");
     }
 
     private Integer getNextId() {
+        log.info("Генерация следующего ID");
         long currentMaxId = filmMap.keySet()
                 .stream()
                 .mapToLong(id -> id)
