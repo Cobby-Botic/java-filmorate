@@ -1,114 +1,147 @@
 package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.Exception.ConditionsNotMetException;
-import ru.yandex.practicum.filmorate.controller.FilmController;
-import ru.yandex.practicum.filmorate.model.Film;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDate;
+import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+@SpringBootTest
+@AutoConfigureMockMvc
 class FilmControllerTest {
 
+    @Autowired
+    private MockMvc mockMvc;
+
     @Test
-    void addNewFilm_shouldAddFilm_whenDataIsCorrect() {
-        FilmController controller = new FilmController();
+    void addNewFilm_shouldAddFilm_whenDataIsCorrect() throws Exception {
 
-        Film film = new Film();
-        film.setName("Matrix");
-        film.setDescription("Good film");
-        film.setReleaseDate(LocalDate.of(1999, 3, 31));
-        film.setDuration(136);
+        String json = """
+                {
+                  "name": "Matrix",
+                  "description": "Good film",
+                  "releaseDate": "1999-03-31",
+                  "duration": 136
+                }
+                """;
 
-        Film savedFilm = controller.addNewFilm(film);
-
-        assertNotNull(savedFilm.getId());
-        assertEquals("Matrix", savedFilm.getName());
-        assertEquals(1, controller.getFilms().size());
+        mockMvc.perform(post("/films")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.name").value("Matrix"));
     }
 
     @Test
-    void addNewFilm_shouldThrowException_whenNameIsEmpty() {
-        FilmController controller = new FilmController();
+    void addNewFilm_shouldReturn400_whenNameIsEmpty() throws Exception {
 
-        Film film = new Film();
-        film.setName("");
-        film.setDescription("Description");
-        film.setReleaseDate(LocalDate.of(1999, 3, 31));
-        film.setDuration(136);
+        String json = """
+                {
+                  "name": "",
+                  "description": "Good film",
+                  "releaseDate": "1999-03-31",
+                  "duration": 136
+                }
+                """;
 
-        ConditionsNotMetException exception = assertThrows(
-                ConditionsNotMetException.class,
-                () -> controller.addNewFilm(film)
-        );
-
-        assertEquals(
-                "Название фильма не может быть пустым",
-                exception.getMessage()
-        );
+        mockMvc.perform(post("/films")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    void addNewFilm_shouldThrowException_whenDescriptionTooLong() {
-        FilmController controller = new FilmController();
+    void addNewFilm_shouldReturn400_whenDescriptionTooLong() throws Exception {
 
-        Film film = new Film();
-        film.setName("Matrix");
-        film.setDescription("a".repeat(201));
-        film.setReleaseDate(LocalDate.of(1999, 3, 31));
-        film.setDuration(136);
+        String json = """
+                {
+                  "name": "Matrix",
+                  "description": "%s",
+                  "releaseDate": "1999-03-31",
+                  "duration": 136
+                }
+                """.formatted("a".repeat(201));
 
-        ConditionsNotMetException exception = assertThrows(
-                ConditionsNotMetException.class,
-                () -> controller.addNewFilm(film)
-        );
-
-        assertEquals(
-                "Длина описания не может быть больше 200 символов",
-                exception.getMessage()
-        );
+        mockMvc.perform(post("/films")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    void addNewFilm_shouldThrowException_whenReleaseDateTooEarly() {
-        FilmController controller = new FilmController();
+    void addNewFilm_shouldReturn400_whenDurationNegative() throws Exception {
 
-        Film film = new Film();
-        film.setName("Old film");
-        film.setDescription("Description");
-        film.setReleaseDate(LocalDate.of(1895, 12, 27));
-        film.setDuration(10);
+        String json = """
+                {
+                  "name": "Matrix",
+                  "description": "Good film",
+                  "releaseDate": "1999-03-31",
+                  "duration": -1
+                }
+                """;
 
-        ConditionsNotMetException exception = assertThrows(
-                ConditionsNotMetException.class,
-                () -> controller.addNewFilm(film)
-        );
-
-        assertEquals(
-                "Дата релиза не может быть раньше 28 декабря 1895 года",
-                exception.getMessage()
-        );
+        mockMvc.perform(post("/films")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    void addNewFilm_shouldThrowException_whenDurationIsNegative() {
-        FilmController controller = new FilmController();
+    void getFilms_shouldReturnFilms() throws Exception {
+        String json = """
+                {
+                  "name": "Matrix",
+                  "description": "Good film",
+                  "releaseDate": "1999-03-31",
+                  "duration": 136
+                }
+                """;
 
-        Film film = new Film();
-        film.setName("Matrix");
-        film.setDescription("Description");
-        film.setReleaseDate(LocalDate.of(1999, 3, 31));
-        film.setDuration(-1);
+        mockMvc.perform(post("/films")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json));
 
-        ConditionsNotMetException exception = assertThrows(
-                ConditionsNotMetException.class,
-                () -> controller.addNewFilm(film)
-        );
+        mockMvc.perform(get("/films"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
+    }
 
-        assertEquals(
-                "Продолжительность фильма должна быть положительным числом",
-                exception.getMessage()
-        );
+    @Test
+    void updateFilm_shouldUpdateFilm_whenFilmExists() throws Exception {
+
+        String createJson = """
+                {
+                  "name": "Matrix",
+                  "description": "Good film",
+                  "releaseDate": "1999-03-31",
+                  "duration": 136
+                }
+                """;
+
+        String response = mockMvc.perform(post("/films")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(createJson))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        String updateJson = """
+                {
+                  "id": 1,
+                  "name": "Matrix Reloaded"
+                }
+                """;
+
+        mockMvc.perform(put("/films")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updateJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Matrix Reloaded"));
     }
 }
