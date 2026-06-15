@@ -32,14 +32,12 @@ class UserContollerTest {
 
     @Test
     void addUser_shouldAddUser_whenDataIsCorrect() throws Exception {
-        String json = """
-                {
-                "login": "vasyan",
-                "name": "Василий",
-                "email": "Vasyan69@mail.ru",
-                "birthday": "2001-02-12"
-                }
-                """;
+        String json = "{\n" +
+                      "                \"login\": \"vasyan\",\n" +
+                      "                \"name\": \"Василий\",\n" +
+                      "                \"email\": \"Vasyan69@mail.ru\",\n" +
+                      "                \"birthday\": \"2001-02-12\"\n" +
+                      "                }\n";
 
         mockMvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -51,14 +49,12 @@ class UserContollerTest {
 
     @Test
     void addUser_shouldThrowException_whenEmailIsEmpty() throws Exception {
-        String json = """
-                {
-                "login": "vasyan",
-                "name": "Василий",
-                "email": "",
-                "birthday": "2001-02-12"
-                }
-                """;
+        String json = "{\n" +
+                      "                \"login\": \"vasyan\",\n" +
+                      "                \"name\": \"Василий\",\n" +
+                      "                \"email\": \"\",\n" +
+                      "                \"birthday\": \"2001-02-12\"\n" +
+                      "                }\n";
 
         mockMvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -68,14 +64,12 @@ class UserContollerTest {
 
     @Test
     void getUsers_shouldReturnAllUsers() throws Exception {
-        String json = """
-                {
-                "login": "vasyan",
-                "name": "Василий",
-                "email": "Vasyan69@mail.ru",
-                "birthday": "2001-02-12"
-                }
-                """;
+        String json = "{\n" +
+                      "                \"login\": \"vasyan\",\n" +
+                      "                \"name\": \"Василий\",\n" +
+                      "                \"email\": \"Vasyan69@mail.ru\",\n" +
+                      "                \"birthday\": \"2001-02-12\"\n" +
+                      "                }\n";
 
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)

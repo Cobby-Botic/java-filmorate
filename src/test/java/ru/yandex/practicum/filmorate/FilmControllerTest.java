@@ -21,14 +21,12 @@ class FilmControllerTest {
     @Test
     void addNewFilm_shouldAddFilm_whenDataIsCorrect() throws Exception {
 
-        String json = """
-                  {
-                  "name": "Matrix",
-                  "description": "Good film",
-                  "releaseDate": "1999-03-31",
-                  "duration": 136
-                }
-                """;
+        String json = "{\n" +
+                      "                  \"name\": \"Matrix\",\n" +
+                      "                  \"description\": \"Good film\",\n" +
+                      "                  \"releaseDate\": \"1999-03-31\",\n" +
+                      "                  \"duration\": 136\n" +
+                      "                }\n";
 
         mockMvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -41,14 +39,13 @@ class FilmControllerTest {
     @Test
     void addNewFilm_shouldReturn400_whenNameIsEmpty() throws Exception {
 
-        String json = """
-                  {
-                  "name": "",
-                  "description": "Good film",
-                  "releaseDate": "1999-03-31",
-                  "duration": 136
-                }
-                """;
+        String json = "{\n" +
+                      "                  \"name\": \"\",\n" +
+                      "                  \"description\": \"Good film\",\n" +
+                      "                  \"releaseDate\": \"1999-03-31\",\n" +
+                      "                  \"duration\": 136\n" +
+                      "                }\n";
+
         mockMvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
@@ -58,14 +55,12 @@ class FilmControllerTest {
     @Test
     void addNewFilm_shouldReturn400_whenDescriptionTooLong() throws Exception {
 
-        String json = """
-                  {
-                  "name": "Matrix",
-                  "description": "%s",
-                  "releaseDate": "1999-03-31",
-                  "duration": 136
-                }
-                """.formatted("a".repeat(201));
+        String json = ("{\n" +
+                       "                  \"name\": \"Matrix\",\n" +
+                       "                  \"description\": \"%s\",\n" +
+                       "                  \"releaseDate\": \"1999-03-31\",\n" +
+                       "                  \"duration\": 136\n" +
+                       "                }\n").formatted("a".repeat(201));
 
         mockMvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -76,14 +71,12 @@ class FilmControllerTest {
     @Test
     void addNewFilm_shouldReturn400_whenDurationNegative() throws Exception {
 
-        String json = """
-                  {
-                  "name": "Matrix",
-                  "description": "Good film",
-                  "releaseDate": "1999-03-31",
-                  "duration": -1
-                }
-                """;
+        String json = "{\n" +
+                      "                  \"name\": \"Matrix\",\n" +
+                      "                  \"description\": \"Good film\",\n" +
+                      "                  \"releaseDate\": \"1999-03-31\",\n" +
+                      "                  \"duration\": -1\n" +
+                      "                }\n";
 
         mockMvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -93,14 +86,12 @@ class FilmControllerTest {
 
     @Test
     void getFilms_shouldReturnFilms() throws Exception {
-        String json = """
-                  {
-                  "name": "Matrix",
-                  "description": "Good film",
-                  "releaseDate": "1999-03-31",
-                  "duration": 136
-                }
-                """;
+        String json = "{\n" +
+                      "                  \"name\": \"Matrix\",\n" +
+                      "                  \"description\": \"Good film\",\n" +
+                      "                  \"releaseDate\": \"1999-03-31\",\n" +
+                      "                  \"duration\": 136\n" +
+                      "                }\n";
 
         mockMvc.perform(post("/films")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -114,14 +105,12 @@ class FilmControllerTest {
     @Test
     void updateFilm_shouldUpdateFilm_whenFilmExists() throws Exception {
 
-        String createJson = """
-                  {
-                  "name": "Matrix",
-                  "description": "Good film",
-                  "releaseDate": "1999-03-31",
-                  "duration": 136
-                }
-                """;
+        String createJson = "{\n" +
+                            "                  \"name\": \"Matrix\",\n" +
+                            "                  \"description\": \"Good film\",\n" +
+                            "                  \"releaseDate\": \"1999-03-31\",\n" +
+                            "                  \"duration\": 136\n" +
+                            "                }\n";
 
         String response = mockMvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -130,12 +119,10 @@ class FilmControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        String updateJson = """
-                  {
-                  "id": 1,
-                  "name": "Matrix Reloaded"
-                }
-                """;
+        String updateJson = "{\n" +
+                            "                  \"id\": 1,\n" +
+                            "                  \"name\": \"Matrix Reloaded\"\n" +
+                            "                }\n";
 
         mockMvc.perform(put("/films")
                         .contentType(MediaType.APPLICATION_JSON)
