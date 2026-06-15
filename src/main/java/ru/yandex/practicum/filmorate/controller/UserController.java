@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.Exception.ConditionsNotMetException;
@@ -23,23 +24,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User addUser(@RequestBody User newUser) {
-        if (newUser.getEmail() == null || newUser.getEmail().isBlank() || !newUser.getEmail().contains("@")) {
-            log.warn("Не корректный email пользователя");
-            throw new ConditionsNotMetException("электронная почта не может быть пустой и должна содержать символ @");
-        }
-        if (newUser.getLogin() == null || newUser.getLogin().isBlank() || newUser.getLogin().contains(" ")) {
-            log.warn("Не корректный логин пользователя");
-            throw new ConditionsNotMetException("логин не может быть пустым и содержать пробелы");
-        }
-        if (newUser.getName() == null || newUser.getName().isBlank()) {
-            log.info("Введено пустое имя пользователя, имя пользователя = логин");
-            newUser.setName(newUser.getLogin());
-        }
-        if (newUser.getBirthday().isAfter(LocalDate.now())) {
-            log.warn("Дата рождения позже текущей даты");
-            throw new ConditionsNotMetException("дата рождения не может быть в будущем.");
-        }
+    public User addUser(@Valid  @RequestBody User newUser) {
         newUser.setId(getNextId());
         userMap.put(newUser.getId(), newUser);
         log.info("Добавление нового пользователя");
@@ -86,5 +71,9 @@ public class UserController {
                 .max()
                 .orElse(0);
         return Math.toIntExact(++currentMaxId);
+    }
+
+    public void clear() {
+        userMap.clear();
     }
 }
