@@ -22,7 +22,7 @@ class FilmControllerTest {
     void addNewFilm_shouldAddFilm_whenDataIsCorrect() throws Exception {
 
         String json = """
-                {
+                  {
                   "name": "Matrix",
                   "description": "Good film",
                   "releaseDate": "1999-03-31",
@@ -42,14 +42,13 @@ class FilmControllerTest {
     void addNewFilm_shouldReturn400_whenNameIsEmpty() throws Exception {
 
         String json = """
-                {
+                  {
                   "name": "",
                   "description": "Good film",
                   "releaseDate": "1999-03-31",
                   "duration": 136
                 }
                 """;
-
         mockMvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
@@ -60,7 +59,7 @@ class FilmControllerTest {
     void addNewFilm_shouldReturn400_whenDescriptionTooLong() throws Exception {
 
         String json = """
-                {
+                  {
                   "name": "Matrix",
                   "description": "%s",
                   "releaseDate": "1999-03-31",
@@ -78,7 +77,7 @@ class FilmControllerTest {
     void addNewFilm_shouldReturn400_whenDurationNegative() throws Exception {
 
         String json = """
-                {
+                  {
                   "name": "Matrix",
                   "description": "Good film",
                   "releaseDate": "1999-03-31",
@@ -95,7 +94,7 @@ class FilmControllerTest {
     @Test
     void getFilms_shouldReturnFilms() throws Exception {
         String json = """
-                {
+                  {
                   "name": "Matrix",
                   "description": "Good film",
                   "releaseDate": "1999-03-31",
@@ -116,7 +115,7 @@ class FilmControllerTest {
     void updateFilm_shouldUpdateFilm_whenFilmExists() throws Exception {
 
         String createJson = """
-                {
+                  {
                   "name": "Matrix",
                   "description": "Good film",
                   "releaseDate": "1999-03-31",
@@ -132,7 +131,7 @@ class FilmControllerTest {
                 .getContentAsString();
 
         String updateJson = """
-                {
+                  {
                   "id": 1,
                   "name": "Matrix Reloaded"
                 }
