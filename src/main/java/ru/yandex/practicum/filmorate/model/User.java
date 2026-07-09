@@ -7,11 +7,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Getter
 @Setter
 public class User {
     private Integer id;
+    private Set<Integer> friends;
 
     @Email
     @NotBlank
@@ -24,4 +26,5 @@ public class User {
 
     @PastOrPresent
     private LocalDate birthday;
+
 }

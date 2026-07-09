@@ -1,0 +1,72 @@
+package ru.yandex.practicum.filmorate.storage.film;
+
+import jakarta.validation.ValidationException;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
+import ru.yandex.practicum.filmorate.Exception.ConditionsNotMetException;
+import ru.yandex.practicum.filmorate.model.Film;
+
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+@Component
+public class InMemoryFilmStorage implements FilmStorage {
+    private final Map<Integer, Film> filmMap = new HashMap<>();
+
+    @Override
+    public Collection<Film> getFilms() {
+        return filmMap.values();
+    }
+
+    public Film addNewFilm(Film newFilm) {
+        filmValidation(newFilm);
+        newFilm.setId(getNextId());
+        filmMap.put(newFilm.getId(), newFilm);
+        return newFilm;
+    }
+
+    public Film updateFilm(@RequestBody Film newFilm) {
+        if (newFilm.getId() == null) {
+            throw new ConditionsNotMetException("Id должен быть указан");
+        }
+        if (filmMap.containsKey(newFilm.getId())) {
+            Film oldFilm = filmMap.get(newFilm.getId());
+            if (newFilm.getName() != null && !newFilm.getName().isBlank()) {
+                oldFilm.setName(newFilm.getName());
+            }
+            if (newFilm.getDescription() != null && !newFilm.getDescription().isBlank() && newFilm.getDescription().length() <= 200) {
+                oldFilm.setDescription(newFilm.getDescription());
+            }
+            if (newFilm.getDuration() != null && newFilm.getDuration() > 0) {
+                oldFilm.setDuration(newFilm.getDuration());
+            }
+            if (newFilm.getReleaseDate() != null && newFilm.getReleaseDate().isAfter(LocalDate.of(1895, 12, 28))) {
+                oldFilm.setReleaseDate(newFilm.getReleaseDate());
+            }
+            return oldFilm;
+        }
+        throw new ConditionsNotMetException("Фильм с id не найден");
+    }
+
+    private Integer getNextId() {
+        long currentMaxId = filmMap.keySet()
+                .stream()
+                .mapToLong(id -> id)
+                .max()
+                .orElse(0);
+        return Math.toIntExact(++currentMaxId);
+    }
+
+    private void filmValidation(Film film) throws ValidationException {
+        if (film.getReleaseDate().isBefore(LocalDate.parse("1895-12-28"))
+                || film.getReleaseDate().isAfter(LocalDate.now())) {
+            throw new ValidationException("Некорректно указана дата релиза.");
+        } if(film.getName().isEmpty()){
+            throw new ValidationException("Некорректно указано название фильма.");
+        } if (film.getDescription().length() > 200){
+            throw new ValidationException("Превышено количество символов в описании фильма.");
+        }
+    }
+}
