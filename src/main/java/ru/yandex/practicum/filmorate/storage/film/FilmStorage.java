@@ -12,5 +12,9 @@ public interface FilmStorage {
 
     public Film addNewFilm(@Valid @RequestBody Film newFilm);
 
+    public Film getFilmById(Integer id);
+
     public Film updateFilm(@RequestBody Film newFilm);
+
+    public void filmValidation(Film film);
 }
