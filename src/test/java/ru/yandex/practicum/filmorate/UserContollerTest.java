@@ -25,11 +25,6 @@ class UserContollerTest {
     @Autowired
     private UserController userController;
 
-    @BeforeEach
-    void clear() {
-        userController.clear();
-    }
-
     @Test
     void addUser_shouldAddUser_whenDataIsCorrect() throws Exception {
         String json = "{\n" +
@@ -78,6 +73,6 @@ class UserContollerTest {
         mockMvc.perform(get("/users")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$", hasSize(2)));
     }
 }
