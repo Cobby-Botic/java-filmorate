@@ -44,8 +44,8 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film addFilm(@Valid @RequestBody Film newFilm) {
-        log.info("Добавление фильма " + newFilm.getName());
+    public Film addFilm(@RequestBody @Valid Film newFilm) {
+        log.info("Добавление фильма {}", newFilm.getName());
         return storage.addNewFilm(newFilm);
     }
 

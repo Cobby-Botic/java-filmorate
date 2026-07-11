@@ -4,8 +4,8 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
-import ru.yandex.practicum.filmorate.Exception.ConditionsNotMetException;
 import ru.yandex.practicum.filmorate.Exception.NotFoundException;
+import ru.yandex.practicum.filmorate.Exception.ValidateException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -37,7 +37,7 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User updateUser(@RequestBody User newUser) {
         if (newUser.getId() == null) {
-            throw new ConditionsNotMetException("Id должен быть указан");
+            throw new ValidateException("Id должен быть указан");
         }
         if (userMap.containsKey(newUser.getId())) {
             User oldUser = userMap.get(newUser.getId());
@@ -55,7 +55,7 @@ public class InMemoryUserStorage implements UserStorage {
             }
             return oldUser;
         }
-        throw new ConditionsNotMetException("Такого пользователя нет");
+        throw new NotFoundException("Такого пользователя нет");
     }
 
     @Override
@@ -77,15 +77,9 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public String deleteFriends(Integer id, Integer friendId) {
-        User user = getUserById(id);
-        User friend = getUserById(friendId);
-        if (user.getFriends().contains(friendId)) {
-            user.getFriends().remove(friendId);
-            friend.getFriends().remove(id);
-            return "Пользователь " + friend.getName() + "удален из списка друзей";
-        }
-        throw new NotFoundException("Пользователь с ID " + friendId + " в списке не найден");
+    public void deleteFriends(Integer id, Integer friendId) {
+        getUserById(id).getFriends().remove(friendId);
+        getUserById(friendId).getFriends().remove(id);
     }
 
     @Override

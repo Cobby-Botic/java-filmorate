@@ -31,7 +31,7 @@ public class UserController {
 
     @PostMapping
     public User addNewUser(@Valid @RequestBody User newUser) {
-        log.info("Запрос на добавление пользователя " + newUser.getName());
+        log.info("Запрос на добавление пользователя {}", newUser.getName());
         return storage.addUser(newUser);
     }
 
@@ -53,9 +53,9 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public String deleteFriendUser(@PathVariable Integer id, @PathVariable Integer friendId) {
+    public void deleteFriendUser(@PathVariable Integer id, @PathVariable Integer friendId) {
         log.info("Получен запрос на удаление пользователя из списка друзей");
-        return service.deleteFriendByUser(id, friendId);
+        service.deleteFriendByUser(id, friendId);
     }
 
     @GetMapping("/{id}/friends/common/{friendId}")

@@ -22,8 +22,8 @@ public class UserService {
         return userStorage.getFriendsByUserId(id);
     }
 
-    public String deleteFriendByUser(Integer id, Integer friendId) {
-        return userStorage.deleteFriends(id, friendId);
+    public void deleteFriendByUser(Integer id, Integer friendId) {
+        userStorage.deleteFriends(id, friendId);
     }
 
     public List<User> getCommonFriends(Integer userId, Integer friendId) {

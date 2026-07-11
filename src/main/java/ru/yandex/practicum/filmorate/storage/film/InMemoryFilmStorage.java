@@ -1,9 +1,8 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
-import jakarta.validation.ValidationException;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.Exception.ConditionsNotMetException;
 import ru.yandex.practicum.filmorate.Exception.NotFoundException;
+import ru.yandex.practicum.filmorate.Exception.ValidateException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
@@ -34,7 +33,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film updateFilm(Film newFilm) {
         if (newFilm.getId() == null) {
-            throw new ConditionsNotMetException("Id должен быть указан");
+            throw new ValidateException("Id должен быть указан");
         }
         if (filmMap.containsKey(newFilm.getId())) {
             Film oldFilm = filmMap.get(newFilm.getId());
@@ -56,18 +55,18 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public void filmValidation(Film film) throws ValidationException {
+    public void filmValidation(Film film) {
         if (film.getReleaseDate().isBefore(LocalDate.parse("1895-12-28"))
                 || film.getReleaseDate().isAfter(LocalDate.now())) {
-            throw new ValidationException("Некорректно указана дата релиза.");
+            throw new ValidateException("Некорректно указана дата релиза.");
         }
 
         if (film.getName().isEmpty()) {
-            throw new ValidationException("Некорректно указано название фильма.");
+            throw new ValidateException("Некорректно указано название фильма.");
         }
 
         if (film.getDescription().length() > 200) {
-            throw new ValidationException("Превышено количество символов в описании фильма.");
+            throw new ValidateException("Превышено количество символов в описании фильма.");
         }
     }
 
