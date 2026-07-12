@@ -8,6 +8,10 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class FilmService {
 
@@ -37,5 +41,12 @@ public class FilmService {
         }
 
         throw new NotFoundException("Пользователь не ставил лайк на этот фильм");
+    }
+
+    public List<Film> getPopularFilms(int count) {
+        return filmStorage.getFilms().stream().sorted(
+                (film1, film2) -> film2.getLikes().size() - film1.getLikes().size())
+                .limit(count)
+                .collect(Collectors.toList());
     }
 }

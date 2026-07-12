@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -53,5 +54,11 @@ public class FilmController {
     public void deleteLike(@PathVariable Integer id, @PathVariable Integer userId) {
         log.info("Пользователь убирает лайк");
         service.deleteLike(id, userId);
+    }
+
+    @GetMapping("/popular")
+    public List<Film> getPopularFilms(@RequestParam (defaultValue = "10") int count) {
+        log.info("Запрос на получение популярных фильмов");
+        return service.getPopularFilms(count);
     }
 }
