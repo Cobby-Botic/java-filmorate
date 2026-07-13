@@ -13,18 +13,17 @@ import java.util.Set;
 @Setter
 public class User {
     private Integer id;
-    private Set<Integer> friends;
-
-    @Email
-    @NotBlank
-    private String email;
 
     @NotBlank
     private String login;
 
+    @Email
+    @NotBlank
+    private String email;
     private String name;
 
     @PastOrPresent
     private LocalDate birthday;
 
+    private Set<Integer> friends;
 }
