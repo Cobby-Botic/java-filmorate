@@ -22,6 +22,7 @@ public class ErrorHandler {
     public ErrorResponse handleValidateException(final ValidateException e) {
         return new ErrorResponse(e.getMessage());
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleIllegalArgumentException(final IllegalArgumentException e) {
