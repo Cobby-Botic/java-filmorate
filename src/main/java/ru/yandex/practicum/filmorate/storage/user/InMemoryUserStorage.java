@@ -5,10 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.Exception.NotFoundException;
-import ru.yandex.practicum.filmorate.Exception.ValidateException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,30 +30,6 @@ public class InMemoryUserStorage implements UserStorage {
         }
         userMap.put(newUser.getId(), newUser);
         return newUser;
-    }
-
-    @Override
-    public User updateUser(@RequestBody User newUser) {
-        if (newUser.getId() == null) {
-            throw new ValidateException("Id должен быть указан");
-        }
-        if (userMap.containsKey(newUser.getId())) {
-            User oldUser = userMap.get(newUser.getId());
-            if (newUser.getName() != null && !newUser.getName().isBlank()) {
-                oldUser.setName(newUser.getName());
-            }
-            if (newUser.getEmail() != null && !newUser.getEmail().isBlank()) {
-                oldUser.setEmail(newUser.getEmail());
-            }
-            if (newUser.getBirthday() != null && !newUser.getBirthday().isAfter(LocalDate.now())) {
-                oldUser.setBirthday(newUser.getBirthday());
-            }
-            if (newUser.getLogin() != null && !newUser.getLogin().isBlank()) {
-                oldUser.setLogin(newUser.getLogin());
-            }
-            return oldUser;
-        }
-        throw new NotFoundException("Такого пользователя нет");
     }
 
     @Override
@@ -112,5 +86,4 @@ public class InMemoryUserStorage implements UserStorage {
                 .orElse(0);
         return Math.toIntExact(++currentMaxId);
     }
-
 }

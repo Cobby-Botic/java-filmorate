@@ -4,9 +4,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.Exception.ValidateException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,28 +17,30 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     private final UserService service;
-    private final UserStorage storage;
 
     @GetMapping
     public Collection<User> getUsers() {
-        return storage.getAllUsers();
+        return service.getAllUsers();
     }
 
     @GetMapping("/{id}")
     public User getUserById(@PathVariable Integer id) {
-        return storage.getUserById(id);
+        return service.getUserById(id);
     }
 
     @PostMapping
     public User addNewUser(@Valid @RequestBody User newUser) {
         log.info("Запрос на добавление пользователя {}", newUser.getName());
-        return storage.addUser(newUser);
+        return service.addUser(newUser);
     }
 
     @PutMapping
     public User updateUserInfo(@Valid @RequestBody User newUser) {
         log.info("Запрос на изменение данных пользователя");
-        return storage.updateUser(newUser);
+        if (newUser.getId() == null) {
+            throw new ValidateException("Id должен быть указан");
+        }
+        return service.updateUser(newUser);
     }
 
     @PutMapping("/{id}/friends/{friendId}")

@@ -19,7 +19,6 @@ public class Film {
     private LocalDate releaseDate;
     @Min(1)
     private Integer duration;
-    private Set<genre> genres;
 
     @NotBlank
     @Length(max = 200)

@@ -6,10 +6,7 @@ import ru.yandex.practicum.filmorate.Exception.ValidateException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
@@ -71,11 +68,8 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film getFilmById(Integer id) {
-        if (filmMap.containsKey(id)) {
-            return filmMap.get(id);
-        }
-        throw new NotFoundException("Фильм с id " + id + " не найден");
+    public Optional<Film> getFilmById(Integer id) {
+        return Optional.ofNullable(filmMap.get(id));
     }
 
     private Integer getNextId() {
