@@ -19,7 +19,8 @@ public class Film {
     private LocalDate releaseDate;
     @Min(1)
     private Integer duration;
-
+    //private Set<Genre>;
+    //private MPA;
     @NotBlank
     @Length(max = 200)
     private String description;
