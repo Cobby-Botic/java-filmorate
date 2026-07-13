@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
-public enum genre {
+public enum Genre {
     COMEDY,
     DRAMA,
     CARTOON,
