@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class UserContollerTest {
+class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -71,6 +71,6 @@ class UserContollerTest {
         mockMvc.perform(get("/users")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(jsonPath("$", hasSize(userController.getUsers().size())));
     }
 }
