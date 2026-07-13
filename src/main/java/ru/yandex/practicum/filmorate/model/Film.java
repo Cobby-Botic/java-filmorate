@@ -13,17 +13,16 @@ import java.util.Set;
 @Setter
 public class Film {
     private Integer id;
-    private Set<Integer> likes;
 
     @NotBlank
     private String name;
+    private LocalDate releaseDate;
+    @Min(1)
+    private Integer duration;
+    private Set<genre> genres;
 
     @NotBlank
     @Length(max = 200)
     private String description;
-
-    private LocalDate releaseDate;
-
-    @Min(1)
-    private Integer duration;
+    private Set<Integer> likes;
 }
