@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.Exception.NotFoundException;
-import ru.yandex.practicum.filmorate.Exception.ValidateException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
@@ -32,6 +31,7 @@ public class FilmService {
             Film film = optFilm.get();
             User user = userStorage.getUserById(userId);
             film.getLikes().add(user.getId());
+            return;
         }
         throw new NotFoundException("Фильм с id " + filmId + " не найден");
     }
@@ -47,6 +47,7 @@ public class FilmService {
             }
             throw new NotFoundException("Пользователь не ставил лайк на этот фильм");
         }
+        throw new NotFoundException("Фильма с id " + id + " в списке нет");
     }
 
     public List<Film> getPopularFilms(int count) {
@@ -56,7 +57,7 @@ public class FilmService {
                     .limit(count)
                     .collect(Collectors.toList());
         }
-        throw new ValidateException("Количество фильмов не может быть отрицательным!");
+        throw new IllegalArgumentException("Количество фильмов не может быть отрицательным!");
     }
 
     public Collection<Film> getFilms() {

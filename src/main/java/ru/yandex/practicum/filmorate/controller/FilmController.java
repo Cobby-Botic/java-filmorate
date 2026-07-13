@@ -38,7 +38,7 @@ public class FilmController {
 
     @PutMapping("/{id}/like/{userId}")
     public void like(@PathVariable Integer id, @PathVariable Integer userId) {
-        log.info("Пользователь ставит лайк");
+        log.info("Пользователь " + userId + " ставит лайк, фильм " + id);
         service.like(id, userId);
     }
 
