@@ -3,21 +3,21 @@
 Получение всех пользователей таблицы:
 
 SELECT *
-FROM user
+FROM users
 
 Получить список друзей пользователя
 
 SELECT u.NAME
-FROM friends f
+FROM friendships f
 JOIN user u ON f.friend_id = u.id
 where f.user_id = 'user_id'
 
 Получить топ 10 фильмов по популярности
 
-SELECT f.name,
+SELECT m.name,
   COUNT(l.user_id) AS likes_count
-FROM film f
-JOIN likes l ON l.film_id = f.id
-GROUP BY f.id, f.name
+FROM movies m
+JOIN likes l ON l.film_id = m.id
+GROUP BY m.id, m.name
 ORDER BY likes_count DESC
 LIMIT 10
