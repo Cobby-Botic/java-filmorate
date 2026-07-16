@@ -12,7 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 public class User {
-    private Integer id;
+    private long id;
 
     @NotBlank
     private String login;
