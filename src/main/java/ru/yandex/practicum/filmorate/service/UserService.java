@@ -1,63 +1,65 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.Exception.ConditionsNotMetException;
-import ru.yandex.practicum.filmorate.Exception.DuplicatedDataException;
-import ru.yandex.practicum.filmorate.Exception.NotFoundException;
-import ru.yandex.practicum.filmorate.dal.UserRepository;
-import ru.yandex.practicum.filmorate.dal.mappers.UserMapper;
-import ru.yandex.practicum.filmorate.dto.NewUserRequest;
-import ru.yandex.practicum.filmorate.dto.UpdateUserRequest;
-import ru.yandex.practicum.filmorate.dto.UserDto;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
+import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
-    private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    private final UserStorage userStorage;
+
+    public Collection<User> getAllUsers() {
+        return userStorage.getAllUsers();
     }
 
-    public UserDto createUser(NewUserRequest request) {
-        if (request.getEmail() == null || request.getEmail().isEmpty()) {
-            throw new ConditionsNotMetException("Имейл должен быть указан");
+    public User getUserById(Integer id) {
+        return userStorage.getUserById(id);
+    }
+/*
+    public User addUser(User newUser) {
+        return userStorage.addUser(newUser);
+    }
+
+    public User addFriend(int userId, int friendId) {
+        userStorage.addFriend(userId, friendId);
+        return userStorage.getUserById(userId);
+    }
+
+    public List<User> getFriendsByUserId(Integer id) {
+        return userStorage.getFriendsByUserId(id);
+    }
+
+    public void deleteFriendByUser(Integer id, Integer friendId) {
+        userStorage.deleteFriends(id, friendId);
+    }
+
+    public List<User> getCommonFriends(Integer userId, Integer friendId) {
+        return userStorage.getCommonFriends(userId, friendId);
+    }
+
+    public User updateUser(User newUser) {
+        User oldUser = userStorage.getUserById(newUser.getId());
+        if (newUser.getName() != null && !newUser.getName().isBlank()) {
+            oldUser.setName(newUser.getName());
         }
-
-        Optional<User> alreadyExistUser = userRepository.findByEmail(request.getEmail());
-        if (alreadyExistUser.isPresent()) {
-            throw new DuplicatedDataException("Данный имейл уже используется");
+        if (newUser.getEmail() != null && !newUser.getEmail().isBlank()) {
+            oldUser.setEmail(newUser.getEmail());
         }
-
-        User user = UserMapper.mapToUser(request);
-
-        user = userRepository.save(user);
-
-        return UserMapper.mapToUserDto(user);
+        if (newUser.getBirthday() != null && !newUser.getBirthday().isAfter(LocalDate.now())) {
+            oldUser.setBirthday(newUser.getBirthday());
+        }
+        if (newUser.getLogin() != null && !newUser.getLogin().isBlank()) {
+            oldUser.setLogin(newUser.getLogin());
+        }
+        return oldUser;
     }
 
-    public UserDto getUserById(long userId) {
-        return userRepository.findById(userId)
-                .map(UserMapper::mapToUserDto)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден с ID: " + userId));
-    }
-
-    public List<UserDto> getUsers() {
-        return userRepository.findAll()
-                .stream()
-                .map(UserMapper::mapToUserDto)
-                .collect(Collectors.toList());
-    }
-
-    public UserDto updateUser(long userId, UpdateUserRequest request) {
-        User updatedUser = userRepository.findById(userId)
-                .map(user -> UserMapper.updateUserFields(user, request))
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
-        updatedUser = userRepository.update(updatedUser);
-        return UserMapper.mapToUserDto(updatedUser);
-    }
+     */
 }
