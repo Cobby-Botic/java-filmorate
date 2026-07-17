@@ -21,7 +21,7 @@ public class FilmoRateApplicationTests {
     @Test
     public void testFindUserById() {
 
-        Optional<User> userOptional = Optional.ofNullable(userStorage.getUserById(1));
+        Optional<User> userOptional = Optional.ofNullable(userStorage.getUserById(1L));
 
         assertThat(userOptional)
                 .isPresent()

@@ -19,14 +19,14 @@ public class UserService {
         return userStorage.getAllUsers();
     }
 
-    public User getUserById(Integer id) {
+    public User getUserById(long id) {
         return userStorage.getUserById(id);
     }
-/*
+
     public User addUser(User newUser) {
         return userStorage.addUser(newUser);
     }
-
+/*
     public User addFriend(int userId, int friendId) {
         userStorage.addFriend(userId, friendId);
         return userStorage.getUserById(userId);
@@ -43,6 +43,7 @@ public class UserService {
     public List<User> getCommonFriends(Integer userId, Integer friendId) {
         return userStorage.getCommonFriends(userId, friendId);
     }
+    */
 
     public User updateUser(User newUser) {
         User oldUser = userStorage.getUserById(newUser.getId());
@@ -60,6 +61,4 @@ public class UserService {
         }
         return oldUser;
     }
-
-     */
 }

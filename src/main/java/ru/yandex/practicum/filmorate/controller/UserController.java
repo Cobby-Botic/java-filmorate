@@ -27,7 +27,7 @@ public class UserController {
     public User getUserById(@PathVariable Integer id) {
         return service.getUserById(id);
     }
-/*
+
     @PostMapping
     public User addNewUser(@Valid @RequestBody User newUser) {
         log.info("Запрос на добавление пользователя {}", newUser.getName());
@@ -42,7 +42,7 @@ public class UserController {
         }
         return service.updateUser(newUser);
     }
-
+/*
     @PutMapping("/{id}/friends/{friendId}")
     public User addFriendUser(@PathVariable Integer id, @PathVariable Integer friendId) {
         log.info("Запрос на добавление в друзья");
