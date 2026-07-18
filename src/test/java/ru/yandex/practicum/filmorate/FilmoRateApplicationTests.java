@@ -1,32 +1,41 @@
 package ru.yandex.practicum.filmorate;
 
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.context.annotation.Import;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 
-import java.util.Optional;
+import java.time.LocalDate;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @JdbcTest
 @AutoConfigureTestDatabase
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class FilmoRateApplicationTests {
-    private final UserDbStorage userStorage;
+@Import(UserDbStorage.class)
+class FilmoRateApplicationTests {
+
+    @Autowired
+    private UserDbStorage userStorage;
+
 
     @Test
     public void testFindUserById() {
+        User user = new User();
 
-        Optional<User> userOptional = Optional.ofNullable(userStorage.getUserById(1L));
+        user.setLogin("testLogin");
+        user.setEmail("test@test.com");
+        user.setName("Test User");
+        user.setBirthday(LocalDate.of(1990, 1, 1));
 
-        assertThat(userOptional)
-                .isPresent()
-                .hasValueSatisfying(user ->
-                        assertThat(user).hasFieldOrPropertyWithValue("id", 1)
-                );
+        User savedUser = userStorage.addUser(user);
+
+        User result = userStorage.getUserById(savedUser.getId());
+
+        assertThat(result)
+                .isNotNull()
+                .hasFieldOrPropertyWithValue("id", savedUser.getId());
     }
 }
