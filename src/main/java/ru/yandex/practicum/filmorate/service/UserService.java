@@ -26,24 +26,23 @@ public class UserService {
     public User addUser(User newUser) {
         return userStorage.addUser(newUser);
     }
-/*
-    public User addFriend(int userId, int friendId) {
+
+    public User addFriend(Long userId, Long friendId) {
         userStorage.addFriend(userId, friendId);
         return userStorage.getUserById(userId);
     }
 
-    public List<User> getFriendsByUserId(Integer id) {
+    public List<User> getFriendsByUserId(Long id) {
         return userStorage.getFriendsByUserId(id);
     }
 
-    public void deleteFriendByUser(Integer id, Integer friendId) {
+    public void deleteFriendByUser(Long id, Long friendId) {
         userStorage.deleteFriends(id, friendId);
     }
 
-    public List<User> getCommonFriends(Integer userId, Integer friendId) {
+    public List<User> getCommonFriends(Long userId, Long friendId) {
         return userStorage.getCommonFriends(userId, friendId);
     }
-    */
 
     public User updateUser(User newUser) {
         User oldUser = userStorage.getUserById(newUser.getId());

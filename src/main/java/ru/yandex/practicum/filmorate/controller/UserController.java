@@ -42,29 +42,27 @@ public class UserController {
         }
         return service.updateUser(newUser);
     }
-/*
+
     @PutMapping("/{id}/friends/{friendId}")
-    public User addFriendUser(@PathVariable Integer id, @PathVariable Integer friendId) {
+    public User addFriendUser(@PathVariable Long id, @PathVariable Long friendId) {
         log.info("Запрос на добавление в друзья");
         return service.addFriend(id, friendId);
     }
 
     @GetMapping("/{id}/friends")
-    public List<User> getFriendsUser(@PathVariable Integer id) {
+    public List<User> getFriendsUser(@PathVariable Long id) {
         return service.getFriendsByUserId(id);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public void deleteFriendUser(@PathVariable Integer id, @PathVariable Integer friendId) {
+    public void deleteFriendUser(@PathVariable Long id, @PathVariable Long friendId) {
         log.info("Получен запрос на удаление пользователя из списка друзей");
         service.deleteFriendByUser(id, friendId);
     }
 
     @GetMapping("/{id}/friends/common/{friendId}")
-    public List<User> getCommonFriends(@PathVariable Integer id, @PathVariable Integer friendId) {
+    public List<User> getCommonFriends(@PathVariable Long id, @PathVariable Long friendId) {
         log.info("Запрос на получение общих друзей");
         return service.getCommonFriends(id, friendId);
     }
-
- */
 }
