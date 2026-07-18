@@ -29,5 +29,5 @@ public class Film {
     @Length(max = 200)
     private String description;
 
-    private Set<Integer> likes;
+    private Set<Long> likes;
 }

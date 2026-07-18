@@ -130,12 +130,10 @@ public class UserDbStorage implements UserStorage {
         return jdbc.query(sql, new Object[]{userId, friendId, userId, friendId}, new UserRowMapper());
     }
 
-
-    private boolean userExists(Long userId) {
+    @Override
+    public boolean userExists(Long userId) {
         String sql = "SELECT COUNT(*) FROM Users WHERE id = ?";
         Integer count = jdbc.queryForObject(sql, Integer.class, userId);
         return count != null && count > 0;
     }
-
-
 }

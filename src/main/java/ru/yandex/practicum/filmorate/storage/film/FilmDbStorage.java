@@ -18,6 +18,7 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -32,7 +33,15 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Collection<Film> getFilms() {
-        String sql = "SELECT * FROM movies";
+        String sql = "SELECT m.id,\n" +
+                "                   m.name,\n" +
+                "                   m.releaseDate,\n" +
+                "                   m.duration,\n" +
+                "                   m.description,\n" +
+                "                   m.mpa_id,\n" +
+                "                   mpa.name AS mpa_name\n" +
+                "            FROM movies m\n" +
+                "            LEFT JOIN MPA mpa ON m.mpa_id = mpa.id";
         return jdbc.query(sql, new FilmRowMapper());
     }
 
@@ -64,9 +73,22 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film getFilmById(Long id) {
-        String sql = "SELECT * FROM movies WHERE id = ?";
-        return jdbc.query(sql, new FilmRowMapper(), id).stream().findAny()
-                .orElseThrow(() -> new NotFoundException("Фильм с id " + id + " не найден"));
+
+        String sql = "SELECT m.id,\n" +
+                "                   m.name,\n" +
+                "                   m.releaseDate,\n" +
+                "                   m.duration,\n" +
+                "                   m.description,\n" +
+                "                   m.mpa_id,\n" +
+                "                   mpa.name AS mpa_name\n" +
+                "            FROM movies m\n" +
+                "            LEFT JOIN MPA mpa ON m.mpa_id = mpa.id\n" +
+                "            WHERE m.id = ?";
+
+        return jdbc.query(sql, new FilmRowMapper(), id).stream()
+                .findFirst()
+                .orElseThrow(() ->
+                        new NotFoundException("Фильм не найден"));
     }
 
     @Override
@@ -120,5 +142,48 @@ public class FilmDbStorage implements FilmStorage {
         return new HashSet<>(
                 jdbc.query(sql, new GenreRowMapper(), filmId)
         );
+    }
+
+    @Override
+    public List<Film> getPopularFilms(int count) {
+
+        String sql = "SELECT m.id,\n" +
+                "               m.name,\n" +
+                "               m.releaseDate,\n" +
+                "               m.duration,\n" +
+                "               m.description,\n" +
+                "               m.mpa_id,\n" +
+                "               mpa.name AS mpa_name\n" +
+                "        FROM movies m\n" +
+                "        LEFT JOIN likes l ON m.id = l.movie_id\n" +
+                "        LEFT JOIN MPA mpa ON m.mpa_id = mpa.id\n" +
+                "        GROUP BY m.id\n" +
+                "        ORDER BY COUNT(l.user_id) DESC\n" +
+                "        LIMIT ?";
+
+        return jdbc.query(sql, new FilmRowMapper(), count);
+    }
+
+    @Override
+    public Set<Long> getLikes(Long filmId) {
+
+        String sql = "SELECT user_id\n" +
+                "            FROM likes\n" +
+                "            WHERE movie_id = ?";
+
+        return new HashSet<>(jdbc.query(
+                        sql,
+                        (rs, rowNum) -> rs.getLong("user_id"),
+                        filmId
+                )
+        );
+    }
+
+    public boolean existsById(Long filmId) {
+        String sql = "SELECT COUNT(*) FROM movies WHERE id = ?";
+
+        Integer count = jdbc.queryForObject(sql, Integer.class, filmId);
+
+        return count != null && count > 0;
     }
 }
