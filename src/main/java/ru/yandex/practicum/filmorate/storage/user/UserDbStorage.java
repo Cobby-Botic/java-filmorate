@@ -112,7 +112,7 @@ public class UserDbStorage implements UserStorage {
         if(!userExists(id)) {
             throw new NotFoundException("Пользователь с id " + id + " не найден");
         }
-        if (!userExists(friendId)) {
+        if(!userExists(friendId)) {
             throw new NotFoundException("Пользователь с id " + friendId + " не найден");
         }
 
