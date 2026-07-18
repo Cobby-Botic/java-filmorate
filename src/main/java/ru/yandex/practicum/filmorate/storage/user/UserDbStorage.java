@@ -109,10 +109,10 @@ public class UserDbStorage implements UserStorage {
         String sql = "DELETE FROM FriendShips WHERE user_id = ? AND friend_id = ?";
 
 
-        if(!userExists(id)) {
+        if (!userExists(id)) {
             throw new NotFoundException("Пользователь с id " + id + " не найден");
         }
-        if(!userExists(friendId)) {
+        if (!userExists(friendId)) {
             throw new NotFoundException("Пользователь с id " + friendId + " не найден");
         }
 
