@@ -7,21 +7,23 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Getter
 @Setter
 public class User {
     private Integer id;
 
-    @Email
-    @NotBlank
-    private String email;
-
     @NotBlank
     private String login;
 
+    @Email
+    @NotBlank
+    private String email;
     private String name;
 
     @PastOrPresent
     private LocalDate birthday;
+
+    private Set<Integer> friends;
 }

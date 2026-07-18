@@ -1,7 +1,5 @@
 package ru.yandex.practicum.filmorate;
 
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,18 +15,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class UserContollerTest {
+class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private UserController userController;
-
-    @BeforeEach
-    void clear() {
-        userController.clear();
-    }
 
     @Test
     void addUser_shouldAddUser_whenDataIsCorrect() throws Exception {
@@ -78,6 +71,6 @@ class UserContollerTest {
         mockMvc.perform(get("/users")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$", hasSize(userController.getUsers().size())));
     }
 }

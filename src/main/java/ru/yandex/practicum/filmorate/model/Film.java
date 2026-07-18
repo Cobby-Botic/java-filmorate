@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -15,13 +16,12 @@ public class Film {
 
     @NotBlank
     private String name;
+    private LocalDate releaseDate;
+    @Min(1)
+    private Integer duration;
 
     @NotBlank
     @Length(max = 200)
     private String description;
-
-    private LocalDate releaseDate;
-
-    @Min(1)
-    private Integer duration;
+    private Set<Integer> likes;
 }
