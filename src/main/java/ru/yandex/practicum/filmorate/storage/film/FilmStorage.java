@@ -11,7 +11,7 @@ public interface FilmStorage {
 
     public Film addNewFilm(Film newFilm);
 
-    public Optional<Film> getFilmById(Integer id);
+    public Film getFilmById(Long id);
 
     public Film updateFilm(Film newFilm);
 

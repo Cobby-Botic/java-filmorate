@@ -6,13 +6,19 @@ CREATE TABLE IF NOT EXISTS users (
     birthdate DATE NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS MPA (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(5)
+);
+
 CREATE TABLE IF NOT EXISTS movies (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(40),
     releaseDate DATE NOT NULL,
     duration INT,
-    age_limit ENUM('0+', '6+', '12+', '16+', '18+'),
-    description VARCHAR(200)
+    mpa_id INT,
+    description VARCHAR(200),
+    FOREIGN KEY (mpa_id) REFERENCES MPA(id)
 );
 
 CREATE TABLE IF NOT EXISTS genres (
