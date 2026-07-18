@@ -1,4 +1,5 @@
-<img width="322" height="522" alt="ER-диаграмма доработанная" src="https://github.com/user-attachments/assets/1bd4c314-04b0-4056-8776-724641aab8ef" />
+<img width="472" height="522" alt="ER-диаграмма доработанная" src="https://github.com/user-attachments/assets/b26252e2-2214-49dc-8217-3ad1719cdc5f" />
+
 
 
 Получение всех пользователей таблицы:
