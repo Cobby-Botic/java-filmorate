@@ -17,12 +17,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class FilmDbStorage implements FilmStorage {
@@ -207,24 +202,26 @@ public class FilmDbStorage implements FilmStorage {
         Map<Long, Set<Long>> likesByFilm = loadLikes(filmIds);
 
         for (Film film : films) {
-            film.setGenres(genresByFilm.getOrDefault(film.getId(), new HashSet<>()));
+            film.setGenres(genresByFilm.getOrDefault(film.getId(), new LinkedHashSet<>()));
+
             film.setLikes(likesByFilm.getOrDefault(film.getId(), new HashSet<>()));
         }
     }
 
     private Map<Long, Set<Genre>> loadGenres(List<Long> filmIds) {
         String sql = """
-                SELECT mg.movie_id,
-                       g.id,
-                       g.name
-                FROM movie_genres mg
-                JOIN genres g ON g.id = mg.genre_id
-                WHERE mg.movie_id IN (:ids)
-                ORDER BY g.id
-                """;
+            SELECT mg.movie_id,
+                   g.id,
+                   g.name
+            FROM movie_genres mg
+            JOIN genres g ON g.id = mg.genre_id
+            WHERE mg.movie_id IN (:ids)
+            ORDER BY mg.movie_id, g.id
+            """;
 
         Map<Long, Set<Genre>> result = new HashMap<>();
-        MapSqlParameterSource params = new MapSqlParameterSource("ids", filmIds);
+        MapSqlParameterSource params =
+                new MapSqlParameterSource("ids", filmIds);
 
         namedJdbc.query(sql, params, rs -> {
             Long filmId = rs.getLong("movie_id");
@@ -233,7 +230,10 @@ public class FilmDbStorage implements FilmStorage {
             genre.setId(rs.getInt("id"));
             genre.setName(rs.getString("name"));
 
-            result.computeIfAbsent(filmId, key -> new HashSet<>()).add(genre);
+            result.computeIfAbsent(
+                    filmId,
+                    key -> new LinkedHashSet<>()
+            ).add(genre);
         });
 
         return result;
