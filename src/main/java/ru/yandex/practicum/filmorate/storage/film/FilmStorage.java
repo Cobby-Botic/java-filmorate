@@ -18,9 +18,11 @@ public interface FilmStorage {
 
     public void filmValidation(Film film);
 
-    boolean existsById(Long filmId);
-
     List<Film> getPopularFilms(int count);
 
-    Set<Long> getLikes(Long filmId);
+    public void addLike(Long filmId, Long userId);
+
+    public void deleteLike(Long filmId, Long userId);
+
+    public boolean existsById(Long filmId);
 }

@@ -2,6 +2,8 @@ package ru.yandex.practicum.filmorate.storage.genre;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.Exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mappers.GenreRowMapper;
@@ -15,12 +17,21 @@ import java.util.Set;
 public class GenreDbStorage implements GenreStorage {
 
     private final JdbcTemplate jdbc;
+    private final NamedParameterJdbcTemplate namedJdbc;
 
     @Autowired
-    public GenreDbStorage(JdbcTemplate jdbc) {
+    public GenreDbStorage(JdbcTemplate jdbc,
+                          NamedParameterJdbcTemplate namedJdbc) {
         this.jdbc = jdbc;
+        this.namedJdbc = namedJdbc;
     }
 
+    @Override
+    public boolean existsById(int id) {
+        String sql = "SELECT COUNT(*) FROM genres WHERE id = ?";
+        Integer count = jdbc.queryForObject(sql, Integer.class, id);
+        return count != null && count > 0;
+    }
 
     @Override
     public void addGenres(Long filmId, Set<Genre> genres) {
@@ -75,9 +86,20 @@ public class GenreDbStorage implements GenreStorage {
     }
 
     @Override
-    public boolean existsById(int id) {
-        String sql = "SELECT COUNT(*) FROM genres WHERE id = ?";
-        Integer count = jdbc.queryForObject(sql, Integer.class, id);
-        return count != null && count > 0;
+    public boolean existAllByIds(Set<Integer> genreIds) {
+        if (genreIds == null || genreIds.isEmpty()) {
+            return true;
+        }
+
+        String sql = "            SELECT COUNT(DISTINCT id)\n" +
+                "            FROM genres\n" +
+                "            WHERE id IN (:ids)";
+
+        MapSqlParameterSource params =
+                new MapSqlParameterSource("ids", genreIds);
+
+        Integer count = namedJdbc.queryForObject(sql, params, Integer.class);
+
+        return count != null && count == genreIds.size();
     }
 }
