@@ -19,7 +19,7 @@ public class UserService {
         return userStorage.getAllUsers();
     }
 
-    public User getUserById(Integer id) {
+    public User getUserById(long id) {
         return userStorage.getUserById(id);
     }
 
@@ -27,37 +27,37 @@ public class UserService {
         return userStorage.addUser(newUser);
     }
 
-    public User addFriend(int userId, int friendId) {
+    public User addFriend(Long userId, Long friendId) {
         userStorage.addFriend(userId, friendId);
         return userStorage.getUserById(userId);
     }
 
-    public List<User> getFriendsByUserId(Integer id) {
+    public List<User> getFriendsByUserId(Long id) {
         return userStorage.getFriendsByUserId(id);
     }
 
-    public void deleteFriendByUser(Integer id, Integer friendId) {
+    public void deleteFriendByUser(Long id, Long friendId) {
         userStorage.deleteFriends(id, friendId);
     }
 
-    public List<User> getCommonFriends(Integer userId, Integer friendId) {
+    public List<User> getCommonFriends(Long userId, Long friendId) {
         return userStorage.getCommonFriends(userId, friendId);
     }
 
     public User updateUser(User newUser) {
         User oldUser = userStorage.getUserById(newUser.getId());
-            if (newUser.getName() != null && !newUser.getName().isBlank()) {
-                oldUser.setName(newUser.getName());
-            }
-            if (newUser.getEmail() != null && !newUser.getEmail().isBlank()) {
-                oldUser.setEmail(newUser.getEmail());
-            }
-            if (newUser.getBirthday() != null && !newUser.getBirthday().isAfter(LocalDate.now())) {
-                oldUser.setBirthday(newUser.getBirthday());
-            }
-            if (newUser.getLogin() != null && !newUser.getLogin().isBlank()) {
-                oldUser.setLogin(newUser.getLogin());
-            }
-            return oldUser;
+        if (newUser.getName() != null && !newUser.getName().isBlank()) {
+            oldUser.setName(newUser.getName());
+        }
+        if (newUser.getEmail() != null && !newUser.getEmail().isBlank()) {
+            oldUser.setEmail(newUser.getEmail());
+        }
+        if (newUser.getBirthday() != null && !newUser.getBirthday().isAfter(LocalDate.now())) {
+            oldUser.setBirthday(newUser.getBirthday());
+        }
+        if (newUser.getLogin() != null && !newUser.getLogin().isBlank()) {
+            oldUser.setLogin(newUser.getLogin());
+        }
+        return oldUser;
     }
 }

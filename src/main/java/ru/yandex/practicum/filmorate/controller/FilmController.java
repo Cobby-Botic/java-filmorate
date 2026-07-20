@@ -25,7 +25,7 @@ public class FilmController {
     }
 
     @GetMapping("/{id}")
-    public Film getFilmById(@PathVariable Integer id) {
+    public Film getFilmById(@PathVariable Long id) {
         log.info("Запрос на получение фильма");
         return service.getFilmById(id);
     }
@@ -37,8 +37,8 @@ public class FilmController {
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public void like(@PathVariable Integer id, @PathVariable Integer userId) {
-        log.info("Пользователь " + userId + " ставит лайк, фильм " + id);
+    public void like(@PathVariable Long id, @PathVariable Long userId) {
+        log.info("Пользователь {} ставит лайк, фильм {}", userId, id);
         service.like(id, userId);
     }
 
